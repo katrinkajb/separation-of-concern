@@ -3,7 +3,8 @@ const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
 const Order = require('../lib/models/Order');
-const twilio = require('twilio');
+jest.mock('../lib/utils/twilio.js');
+const twilio = require('../lib/utils/twilio.js');
 
 jest.mock('twilio', () => () => ({
   messages: {
@@ -21,7 +22,7 @@ describe('03_separation-of-concerns-demo routes', () => {
   beforeEach(async() => {
     order = await Order.insert({quantity: 5})
 
-    // twilio.sendSms.mockClear();
+    twilio.sendSms.mockClear();
   })
 
   it('creates a new order in our database and sends a text message', () => {
@@ -29,7 +30,7 @@ describe('03_separation-of-concerns-demo routes', () => {
       .post('/api/v1/orders')
       .send({ quantity: 10 })
       .then((res) => {
-        // expect(twilio.sendSms).toHaveBeenCalledTimes(1);
+        expect(twilio.sendSms).toHaveBeenCalledTimes(1);
         expect(res.body).toEqual({
           id: '2',
           quantity: 10,
@@ -37,16 +38,17 @@ describe('03_separation-of-concerns-demo routes', () => {
       });
   });
 
-  it('ASYNC/AWAIT: creates a new order in our database and sends a text message', async () => {
-    const res = await request(app)
-      .post('/api/v1/orders')
-      .send({ quantity: 5 });
+// Same test, different way of doing it
+  // it('ASYNC/AWAIT: creates a new order in our database and sends a text message', async () => {
+  //   const res = await request(app)
+  //     .post('/api/v1/orders')
+  //     .send({ quantity: 5 });
 
-    expect(res.body).toEqual({
-      id: '2',
-      quantity: 5,
-    });
-  });
+  //   expect(res.body).toEqual({
+  //     id: '2',
+  //     quantity: 5,
+  //   });
+  // });
 
   it('gets all orders', async () => {
     return request(app)
@@ -75,23 +77,12 @@ describe('03_separation-of-concerns-demo routes', () => {
       .put('/api/v1/orders/1')
       .send({ quantity: 10 })
       .then((res) => {
-        // expect(twilio.sendSms).toHaveBeenCalledTimes(1);
+        expect(twilio.sendSms).toHaveBeenCalledTimes(1);
         expect(res.body).toEqual({
           id: '1',
           quantity: 10,
         });
       });
   });
-
-  // it('ASYNC/AWAIT: updates an order in our database and sends a text message', async () => {
-  //   const res = await request(app)
-  //     .post('/api/v1/orders')
-  //     .send({ quantity: 5 });
-
-  //   expect(res.body).toEqual({
-  //     id: '2',
-  //     quantity: 5,
-  //   });
-  // });
 
 })
