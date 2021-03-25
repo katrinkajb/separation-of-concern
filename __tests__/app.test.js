@@ -37,18 +37,6 @@ describe('03_separation-of-concerns-demo routes', () => {
       });
   });
 
-// Same test, different way of doing it
-  // it('ASYNC/AWAIT: creates a new order in our database and sends a text message', async () => {
-  //   const res = await request(app)
-  //     .post('/api/v1/orders')
-  //     .send({ quantity: 5 });
-
-  //   expect(res.body).toEqual({
-  //     id: '2',
-  //     quantity: 5,
-  //   });
-  // });
-
   it('gets all orders', async () => {
     const res = await request(app)
       .get('/api/v1/orders')
@@ -84,7 +72,7 @@ describe('03_separation-of-concerns-demo routes', () => {
   it('deletes a single order by id', async () => {
     const res = await request(app)
       .delete('/api/v1/orders/1')
-      
+
       expect(twilio.sendSms).toHaveBeenCalledTimes(1);
       expect(res.body).toEqual({
         id: '1',
