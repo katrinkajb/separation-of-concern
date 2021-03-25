@@ -45,9 +45,9 @@ describe('03_separation-of-concerns-demo routes', () => {
     });
   });
 
-  it('gets a single order by id', () => {
+  it('gets all orders', async () => {
     return request(app)
-      .get('/api/v1/orders/1')
+      .get('/api/v1/orders')
       .then((res) => {
         expect(res.body).toEqual([{
           id: '1',
@@ -55,4 +55,15 @@ describe('03_separation-of-concerns-demo routes', () => {
         }]);
       });
   });
+
+  // it('gets a single order by id', async () => {
+  //   return request(app)
+  //     .get('/api/v1/orders/1')
+  //     .then((res) => {
+  //       expect(res.body).toEqual([{
+  //         id: '1',
+  //         quantity: 5,
+  //       }]);
+  //     });
+  // });
 })
