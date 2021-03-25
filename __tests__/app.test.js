@@ -85,4 +85,16 @@ describe('03_separation-of-concerns-demo routes', () => {
       });
   });
 
+  it('deletes a single order by id', async () => {
+    return request(app)
+      .delete('/api/v1/orders/1')
+      .then((res) => {
+        expect(twilio.sendSms).toHaveBeenCalledTimes(1);
+        expect(res.body).toEqual({
+          id: '1',
+          quantity: 5,
+        });
+      });
+  });
+
 })
